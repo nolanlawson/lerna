@@ -88,7 +88,7 @@ export default class BootstrapCommand extends Command {
 
     const packageJsonFileContents = JSON.stringify(newPkgJson, null, "  ");
     const indexJsFileContents = "module.exports = require(" + JSON.stringify(src) + ");";
-    const moduleJsFileContents = "export * from " + JSON.stringify(src) + ";";
+    const moduleJsFileContents = "export * from " + JSON.stringify(src + '/src/index') + ";";
 
     async.parallel([
       callback => {
