@@ -116,25 +116,11 @@ export default class BootstrapCommand extends Command {
   }
 
   createLinkedDependencyFiles(src, dest, name, callback) {
-    const srcPackageJsonLocation = path.join(src, "package.json");
-    const destPackageJsonLocation = path.join(dest, "package.json");
     const destIndexJsLocation = path.join(dest, "index.js");
 
-    const packageJsonFileContents = JSON.stringify({
-      name: name,
-      version: require(srcPackageJsonLocation).version
-    }, null, "  ");
+    const moduleJsFileContents = "export * from " + JSON.stringify(src + '/src/index') + ";";
 
-    const prefix = this.repository.linkedFiles.prefix || "";
-    const indexJsFileContents = prefix + "module.exports = require(" + JSON.stringify(src) + ");";
-
-    FileSystemUtilities.writeFile(destPackageJsonLocation, packageJsonFileContents, err => {
-      if (err) {
-        return callback(err);
-      }
-
-      FileSystemUtilities.writeFile(destIndexJsLocation, indexJsFileContents, callback);
-    });
+    FileSystemUtilities.writeFile(destIndexJsLocation, moduleJsFileContents, callback);
   }
 
   installExternalPackages(pkg, callback) {
