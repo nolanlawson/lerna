@@ -70,35 +70,11 @@ export default class BootstrapCommand extends Command {
   }
 
   createLinkedDependencyFiles(src, dest, name, callback) {
-    const srcPackageJsonLocation = path.join(src, "package.json");
-    const destPackageJsonLocation = path.join(dest, "package.json");
     const destIndexJsLocation = path.join(dest, "index.js");
-    const destModuleJsLocation = path.join(dest, "module.js");
-    const pkg = require(srcPackageJsonLocation);
 
-    const newPkgJson = {
-      name: name,
-      version: pkg.version,
-      main: "index.js"
-    };
-
-    if (pkg["jsnext:main"]) { // support jsnext:main convention for ES modules
-      newPkgJson["jsnext:main"] = "module.js";
-    }
-
-    const packageJsonFileContents = JSON.stringify(newPkgJson, null, "  ");
-    const indexJsFileContents = "module.exports = require(" + JSON.stringify(src) + ");";
     const moduleJsFileContents = "export * from " + JSON.stringify(src + '/src/index') + ";";
 
-    async.parallel([
-      callback => {
-        FileSystemUtilities.writeFile(destPackageJsonLocation, packageJsonFileContents, callback);
-      }, callback => {
-        FileSystemUtilities.writeFile(destModuleJsLocation, moduleJsFileContents, callback);
-      }, callback => {
-        FileSystemUtilities.writeFile(destIndexJsLocation, indexJsFileContents, callback);
-      }],
-    callback);
+    FileSystemUtilities.writeFile(destIndexJsLocation, moduleJsFileContents, callback);
   }
 
   installExternalPackages(pkg, callback) {
