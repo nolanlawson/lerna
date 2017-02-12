@@ -34,7 +34,8 @@ export default class ImportCommand extends Command {
       return callback(e);
     }
 
-    this.targetDir = "packages/" + externalRepoBase;
+    // change "packages" to whatever subdirectory you want here
+    this.targetDir = "packages/node_modules/" + externalRepoBase;
 
     try {
       if (fs.statSync(this.targetDir)) {
